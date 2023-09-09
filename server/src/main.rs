@@ -38,7 +38,10 @@ fn transfer(mut stream: TcpStream, addr: SocketAddr) {
             }
             Err(e) => match e.kind() {
                 io::ErrorKind::Interrupted => {}
-                _ => panic!("{}", e),
+                _ => {
+                    println!("Error while transfering {}...", file_name);
+                    return;
+                }
             },
         }
         let time_elapsed = time.elapsed().as_secs_f32();
@@ -76,6 +79,7 @@ fn transfer(mut stream: TcpStream, addr: SocketAddr) {
         .write_all(&[(transfered_size as u64 == file_size) as u8])
         .expect("successful answer");
     stream.flush().expect("successful flush");
+    println!("file {} successfully transfered", file_name);
 }
 
 fn main() {
